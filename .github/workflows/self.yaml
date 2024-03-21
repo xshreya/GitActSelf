@@ -23,4 +23,4 @@ jobs:
       run: pip install numpy 
       
     - name: Run Python script
-      run: python matrix_operations.py
+      run: python file.py
