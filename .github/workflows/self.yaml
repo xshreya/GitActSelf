@@ -13,12 +13,13 @@ jobs:
       uses: actions/checkout@v2
     
     - name: Run Python script
-      run: python file.py
+      run: python file2.py
 
 
   secrets-example:
     needs: build
     runs-on: ubuntu-latest
+    if: ${{always()}}
 
     steps:
       - name: checkout code
