@@ -1,16 +1,50 @@
-name: Python Matrix Operations
+name: Matrix Operations
 
 on:
   workflow_dispatch:
 
 jobs:
-  build:
+  checkout-code:
     runs-on: self-hosted
-    
-    
+    outputs:
+      python-output: ${{ steps.run-python-script.outputs.python-output }}
+      js-output: ${{ steps.run-js-script.outputs.js-output }}
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-    
-    - name: Run Python script
-      run: python file.py
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+  run-python-script:
+    needs: checkout-code
+    runs-on: self-hosted
+    outputs:
+      python-output: ${{ steps.print-python-output.outputs.python-output }}
+    steps:
+      - name: Run Python script
+        run: python file.py
+      - name: Generate Python Output
+        run: echo "::set-output name=python-output::<python output goes here>"
+
+  run-js-script:
+    needs: run-python-script
+    runs-on: self-hosted
+    outputs:
+      js-output: ${{ steps.print-js-output.outputs.js-output }}
+    steps:
+      - name: Run JavaScript script
+        run: node script.js
+      - name: Generate JavaScript Output
+        run: echo "::set-output name=js-output::<js output goes here>"
+
+  print-python-output:
+    needs: run-js-script
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Python Output
+        run: echo "Python output: ${{ needs.run-python-script.outputs.python-output }}"
+
+  print-js-output:
+    needs: print-python-output
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print JavaScript Output
+        run: echo "JavaScript output: ${{ needs.run-js-script.outputs.js-output }}"
