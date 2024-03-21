@@ -48,3 +48,18 @@ jobs:
     steps:
       - name: Print JavaScript Output
         run: echo "JavaScript output: ${{ needs.run-js-script.outputs.js-output }}"
+
+
+  secrets-example:
+    needs: print-js-output
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v2
+
+      - name: use a secret variable
+        env: 
+          SECRET_TOKEN: ${{secrets.my_secret_token}}
+        run: |
+          echo "The secret is $SECRET_TOKEN"
